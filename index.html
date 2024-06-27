@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+    <style></style>
+  </head>
+
+  <body>
+    <div class="main">
+      <div class="child">
+        <h2>Dino Game</h2>
+        <div class="score_board">
+          <div>
+            <h3 style="color: red">
+              Your Points : <span id="point"></span>
+            </h3>
+          </div>
+          <div>
+            <h3 style="color: red">
+              Highest Score: <span id="h_score"></span>
+            </h3>
+          </div>
+        </div>
+        <div class="game_board">
+          <div class="land"></div>
+        </div>
+        <div>
+          <button class="start_button">Play Button</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      let gameboard = document.querySelector('.game_board');
+
+      document
+        .querySelector('.start_button')
+        .addEventListener('click', () => {
+          let denoX = 2,
+            denoY = 7;
+          let wallX = 7,
+            wallY = 22;
+          let jump;
+          let html;
+          let valocity = -1;
+          let point = 0;
+          let hightscore;
+
+          let dino = () => {
+            if (jump == false) {
+              denoY = denoY + 1;
+            }
+            if (jump == true) {
+              if (denoY >= 7) {
+                denoY = denoY - 1;
+              }
+            }
+
+            html = `<div class ="dino" style = "grid-area:${denoY} / ${denoX}"></div>   <div class="land"></div>`;
+            gameboard.innerHTML = html;
+          };
+
+          let wall = () => {
+            hightscore = localStorage.getItem('point');
+            document.getElementById('h_score').innerText = hightscore;
+
+            if (hightscore < point) {
+              document.getElementById('h_score').innerText = point;
+            }
+
+            if (wallX == denoY && wallY == denoX) {
+              hightscore = localStorage.getItem('point');
+
+              if (hightscore <= point) {
+                localStorage.setItem('point', point);
+              }
+              score_find = localStorage.getItem('point');
+
+              alert(
+                'Game Over!! Your Point is ' +
+                  point +
+                  ' Highest scroe:' +
+                  score_find
+              );
+
+              clearInterval(timeinterval);
+
+              location.reload();
+            } else {
+              if (denoX > wallY) {
+                point += 1;
+                document.getElementById('point').innerHTML = point;
+              }
+
+              if (wallY == 1) {
+                let random_number = Math.floor(Math.random() * 2) + 1;
+                if (random_number == 1) {
+                  wallX = 7;
+                } else {
+                  wallX = 6;
+                }
+                wallY = 22;
+
+                // alert('sadf');
+              } else {
+                wallY += valocity;
+                html = '';
+                html += `<div class ="dino" style = "grid-area:${denoY} / ${denoX}"></div><div class ="wall" style = "grid-area: ${wallX} / ${wallY}"></div>   <div class="land"></div>`;
+
+                gameboard.innerHTML = html;
+              }
+            }
+          };
+
+          let jumpDino = (e) => {
+            if (e.key == 'ArrowUp') {
+              jump = true;
+            }
+
+            dino();
+          };
+          let downDino = (e) => {
+            if (e.key == 'ArrowUp') {
+              jump = false;
+            }
+
+            dino();
+          };
+
+          //button press call function
+          document.addEventListener('keydown', jumpDino);
+          document.addEventListener('keyup', downDino);
+          //manual function call
+          dino();
+
+          let timeinterval = setInterval(() => {
+            wall();
+          }, 100);
+        });
+    </script>
+  </body>
+</html>
